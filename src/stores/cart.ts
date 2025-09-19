@@ -16,21 +16,50 @@ type ProductForCart = Omit<CartItem, 'qty'>
 export const useCart = defineStore('cart', () => {
   const cartItems = ref<CartItem[]>([])
 
-  // ✅ Load saved cart from localStorage on init
-  const savedCart = localStorage.getItem('cart')
-  if (savedCart) {
-    try {
-      cartItems.value = JSON.parse(savedCart)
-    } catch {
-      cartItems.value = []
+  // ✅ Load user-specific cart from localStorage on init
+  const loadUserCart = () => {
+    const userInfo = localStorage.getItem('userInfo')
+    let userId = 'anonymous'
+    
+    if (userInfo) {
+      try {
+        const parsed = JSON.parse(userInfo)
+        userId = parsed.username || 'anonymous'
+      } catch {
+        userId = 'anonymous'
+      }
+    }
+    
+    const savedCart = localStorage.getItem(`cart_${userId}`)
+    if (savedCart) {
+      try {
+        cartItems.value = JSON.parse(savedCart)
+      } catch {
+        cartItems.value = []
+      }
     }
   }
+  
+  // Load cart on initialization
+  loadUserCart()
 
-  // ✅ Persist cart to localStorage whenever it changes
+  // ✅ Persist user-specific cart to localStorage whenever it changes
   watch(
     cartItems,
     (newCart) => {
-      localStorage.setItem('cart', JSON.stringify(newCart))
+      const userInfo = localStorage.getItem('userInfo')
+      let userId = 'anonymous'
+      
+      if (userInfo) {
+        try {
+          const parsed = JSON.parse(userInfo)
+          userId = parsed.username || 'anonymous'
+        } catch {
+          userId = 'anonymous'
+        }
+      }
+      
+      localStorage.setItem(`cart_${userId}`, JSON.stringify(newCart))
     },
     { deep: true }
   )
@@ -84,6 +113,7 @@ export const useCart = defineStore('cart', () => {
 
   return {
     cartItems,
+    loadUserCart,
     addItem,
     updateQuantity,
     incrementQuantity,

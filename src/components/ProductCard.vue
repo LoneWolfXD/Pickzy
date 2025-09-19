@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useCart } from '@/stores/cart' // ← IMPORT the store
 import type { ICard } from '@/models/Card'
 import gsap from 'gsap'
@@ -84,24 +85,39 @@ function addToCart() {
   // 🎉 Trigger popup after adding
   showPopup('Product added to cart!')
 }
+
+function goToProductDetails(event: Event) {
+  // Prevent navigation if clicking on cart buttons
+  const target = event.target as HTMLElement
+  if (target.closest('button')) {
+    return
+  }
+  
+  // Navigate to product details page
+  const router = useRouter()
+  router.push(`/product-details/${props.products.id}`)
+}
 </script>
 
 <template>
-  <div class="w-56 rounded-lg bg-white shadow-xl overflow-hidden">
+  <div 
+    class="w-full rounded-lg bg-white shadow-lg overflow-hidden cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl"
+    @click="goToProductDetails"
+  >
     <!-- Image (blank area if missing) -->
     <img
       v-if="imageSrc"
       :src="imageSrc"
       :alt="props.products.name"
-      class="w-full h-60 object-cover bg-gray-50"
+      class="w-full h-40 md:h-48 lg:h-60 object-cover bg-gray-50"
     />
-    <div v-else class="w-full h-60 bg-gray-100"></div>
+    <div v-else class="w-full h-40 md:h-48 lg:h-60 bg-gray-100"></div>
 
-    <div class="p-3">
+    <div class="p-3 md:p-4">
       <p class="text-xs text-green-600 font-medium mb-1">⏱ 8 MINS</p>
 
       <div>
-        <h3 class="text-sm font-semibold text-gray-800 truncate w-full">
+        <h3 class="text-sm md:text-base font-semibold text-gray-800 truncate w-full">
           {{ props.products.name }}
         </h3>
         <p v-if="props.products.weight" class="text-xs text-gray-500">
@@ -110,17 +126,17 @@ function addToCart() {
       </div>
 
       <div class="flex items-center justify-between mt-3">
-        <span class="text-sm font-bold text-gray-900">{{ priceDisplay }}</span>
+        <span class="text-sm md:text-base font-bold text-gray-900">{{ priceDisplay }}</span>
         <div v-if="inCartQty > 0" class="flex items-center bg-green-600 text-white rounded-md py-1">
-          <button @click="decrementQty" class="px-2 cursor-pointer">−</button>
-          <span class="px-1">{{ inCartQty }}</span>
-          <button @click="incrementQty" class="px-2 cursor-pointer">+</button>
+          <button @click.stop="decrementQty" class="px-2 cursor-pointer hover:bg-green-700">−</button>
+          <span class="px-2">{{ inCartQty }}</span>
+          <button @click.stop="incrementQty" class="px-2 cursor-pointer hover:bg-green-700">+</button>
         </div>
 
         <button
           v-else
-          class="px-3 py-1 text-sm font-medium text-green-700 border border-green-700 rounded-md cursor-pointer transition"
-          @click="addToCart"
+          class="px-3 py-1 text-xs md:text-sm font-medium text-green-700 border border-green-700 rounded-md cursor-pointer transition hover:bg-green-700 hover:text-white"
+          @click.stop="addToCart"
         >
           ADD
         </button>

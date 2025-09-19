@@ -1,6 +1,14 @@
 <!-- src/components/Cart.vue -->
 <template>
   <Header :param="routepath.path"/>
+  
+  <LoadingSpinner 
+    v-if="loading" 
+    text="Loading your cart..." 
+    size="lg"
+    fullScreen
+  />
+  
   <div  class="min-h-screen bg-gray-100 py-10">
     <div class="mx-auto w-[min(1200px,95%)]">
       <!-- Header -->
@@ -176,6 +184,7 @@ import { useCart } from '@/stores/cart'
 import { useRouter, useRoute } from 'vue-router'
 import authorization from '@/composables/auth'
 import loginModal from '@/composables/loginmodal'
+import LoadingSpinner from './LoadingSpinner.vue'
 
 const cart = useCart()
 const route = useRouter()
@@ -184,7 +193,7 @@ const auth = authorization()
 const {isLoggedIn,checkAuthorization} = auth
 const {toogleModal} = loginModal()
 
-
+const loading = ref(false)
 
 const shipping = ref<'pickup' | 'delivery'>('pickup')
 const shippingCost = computed(() => (shipping.value === 'delivery' ? 9.9 : 0))

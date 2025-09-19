@@ -18,28 +18,25 @@
       <!-- Scrollable Carousel -->
       <div
         ref="carousel"
-
-        class="flex gap-12 overflow-x-auto overflow-y-hidden scroll-smooth no-scrollbar px-12 "
-
+        class="flex gap-8 md:gap-12 overflow-x-auto overflow-y-hidden scroll-smooth no-scrollbar px-8 md:px-12"
       >
         <div
           v-for="(item, index) in items"
           :key="index"
-
-          class="flex-shrink-0 w-37 flex flex-col items-center text-center cursor-pointer group "
+          class="flex-shrink-0 w-32 md:w-40 flex flex-col items-center text-center cursor-pointer group"
         >
-          
-           <RouterLink  :to="{ name: 'products', params: { title: item.title } }">
-
-             <img
-               :src="item.image"
-               :alt="item.title"
-               class="w-52 h-50 object-contain group-hover:scale-110 transition-transform duration-300  object-bottom"
-             />
-           </RouterLink>
-
-          
-
+          <RouterLink :to="{ name: 'products', params: { title: item.title } }">
+            <div class="bg-white rounded-2xl p-4 shadow-lg group-hover:shadow-xl transition-all duration-300">
+              <img
+                :src="item.image"
+                :alt="item.title"
+                class="w-full h-24 md:h-32 object-contain group-hover:scale-110 transition-transform duration-300"
+              />
+            </div>
+            <p class="mt-3 text-xs md:text-sm font-medium text-gray-700 group-hover:text-green-600 transition-colors">
+              {{ item.title }}
+            </p>
+          </RouterLink>
         </div>
       </div>
 
@@ -78,11 +75,11 @@ const items = [
 const carousel = ref(null)
 
 const scrollLeft = () => {
-  carousel.value.scrollBy({ left: -250, behavior: "smooth" })
+  carousel.value.scrollBy({ left: -200, behavior: "smooth" })
 }
 
 const scrollRight = () => {
-  carousel.value.scrollBy({ left: 250, behavior: "smooth" })
+  carousel.value.scrollBy({ left: 200, behavior: "smooth" })
 }
 </script>
 

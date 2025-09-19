@@ -2,6 +2,7 @@ import Productslist from '@/components/Productslist.vue'
 import Home from '@/views/Home.vue'
 import Login from '@/views/Login.vue'
 import Cart from '@/components/Cart.vue';
+import ProductDetails from '@/views/ProductDetails.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import Search from '@/views/Search.vue';
 
@@ -33,6 +34,11 @@ const router = createRouter({
       path:'/search',
       name:"search",
       component: Search
+    },
+    {
+      path: '/product-details/:id',
+      name: 'product-details',
+      component: ProductDetails
     }
   ],
   scrollBehavior(to, from, savedPosition) {

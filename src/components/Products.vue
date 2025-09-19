@@ -5,6 +5,7 @@ import { ref, onMounted, watch } from 'vue'
 import ProductCard from './ProductCard.vue'
 import filter from '@/composables/filter.ts'
 const {filterCategory} = filter()
+import LoadingSpinner from './LoadingSpinner.vue'
 import type { ICard } from '@/models/Card'
 const Productstore = useProductStore()
 const Category = ref<ICategorycard[]>([])
@@ -55,17 +56,16 @@ const loading = ref(true);
 </script>
 
 <template>
-  <div v-if="Productstore.loading">
-    <div v-if="loading" class="flex justify-center items-center h-64">
-      <div
-        class="animate-spin rounded-full h-12 w-12 border-4 border-purple-500 border-t-transparent"
-      ></div>
-    </div>
-  </div>
+  <LoadingSpinner 
+    v-if="Productstore.loading" 
+    text="Loading fresh products..." 
+    subText="Getting the best deals for you"
+    size="lg"
+  />
   <div v-else-if="Productstore.error">{{ Productstore.error }}</div>
-  <div class="container mx-auto px-[104px]">
+  <div class="container mx-auto px-4 md:px-8 lg:px-16">
 
-    <div class="grid gap-6 grid-cols-[repeat(auto-fit,minmax(220px,1fr))]">
+    <div class="grid gap-4 md:gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
 
       <ProductCard
         v-for="eachProductcard in allProducts"

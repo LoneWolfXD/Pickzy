@@ -135,6 +135,22 @@ async function handleLogin() {
     if (!res.ok) throw new Error(data.error || 'Login failed')
     // localStorage.removeItem("token", data.token)
     Cookies.set('token', data.token, { expires: 1, secure: true, sameSite: 'Strict' })
+    
+    // Store user info
+    localStorage.setItem('userInfo', JSON.stringify({
+      username: data.username,
+      name: form.value.username
+    }))
+    
+    // Restore user-specific cart
+    const savedCart = localStorage.getItem(`cart_${data.username}`)
+    if (savedCart) {
+      // Import cart store to restore items
+      const { useCart } = await import('@/stores/cart')
+      const cart = useCart()
+      cart.cartItems = JSON.parse(savedCart)
+    }
+    
     toogleModal()
     checkAuthorization()
 
@@ -173,9 +189,20 @@ async function handleGoogleLogin() {
     // localStorage.setItem("token", token)
 
     // Save user details
-    user.value = {
+    const userInfo = {
       username: userData.displayName,
       email: userData.email,
+      name: userData.displayName
+    }
+    
+    localStorage.setItem('userInfo', JSON.stringify(userInfo))
+    
+    // Restore user-specific cart
+    const savedCart = localStorage.getItem(`cart_${userData.displayName}`)
+    if (savedCart) {
+      const { useCart } = await import('@/stores/cart')
+      const cart = useCart()
+      cart.cartItems = JSON.parse(savedCart)
     }
 
     Cookies.set('token', token, { expires: 1, secure: true, sameSite: 'Strict' })
